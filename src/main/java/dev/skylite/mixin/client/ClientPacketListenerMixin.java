@@ -45,9 +45,12 @@ public class ClientPacketListenerMixin {
 
 	@Inject(method = "handleContainerSetSlot", at = @At("TAIL"))
 	private void skylite$inventory(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
-		if (Minecraft.getInstance().gui.screen() == null) {
+		var screen = Minecraft.getInstance().gui.screen();
+		if (screen == null) {
 			AbilityAlert.INSTANCE.onInventory(packet.getItem());
 			BreakResetFix.INSTANCE.onInventory(packet.getSlot(), packet.getItem());
+		} else {
+			dev.skylite.core.module.general.ItemProtection.INSTANCE.onSlotUpdate(packet.getItem(), false);
 		}
 	}
 

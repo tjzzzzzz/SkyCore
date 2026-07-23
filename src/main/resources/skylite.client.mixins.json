@@ -29,7 +29,11 @@
     "ScreenEffectRendererMixin",
     "BossHealthOverlayMixin",
     "ClientLevelMixin",
-    "FogRendererMixin"
+    "FogRendererMixin",
+    "HudMixin",
+    "GameRendererMixin",
+    "EntityRendererMixin",
+    "AbstractRecipeBookScreenMixin"
   ],
   "mixins": []
 }

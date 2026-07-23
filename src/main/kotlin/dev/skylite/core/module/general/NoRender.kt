@@ -11,10 +11,12 @@ import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket
 import net.minecraft.world.entity.Display
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.LightningBolt
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.animal.sheep.Sheep
+import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.item.FallingBlockEntity
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.inventory.Slot
@@ -53,6 +55,14 @@ object NoRender {
         if (cfg.bonePlating && dungeons && entity is ItemEntity) {
             val stack = entity.item
             if (stack.item == Items.BONE_MEAL && ItemData.plain(stack.hoverName) == "Bone Meal") return true
+        }
+        if (cfg.soulweaverSkulls && dungeons && entity is ArmorStand) {
+            val helmet = entity.getItemBySlot(EquipmentSlot.HEAD)
+            if (helmet.item == Items.PLAYER_HEAD && ItemData.hasTexturePayload(helmet, -1020507406)) return true
+        }
+        if (cfg.healerFairy && dungeons && entity is ArmorStand && entity.isMarker) {
+            val hand = entity.getItemBySlot(EquipmentSlot.MAINHAND)
+            if (hand.item == Items.PLAYER_HEAD && ItemData.hasTexturePayload(hand, 758129854)) return true
         }
         return false
     }

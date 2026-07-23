@@ -66,8 +66,8 @@ object EtherwarpOverlay {
         val hit = level.clip(
             ClipContext(eye, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player)
         )
-        if (hit.type != HitResult.Type.BLOCK || hit !is BlockHitResult) return null
-        return hit.blockPos
+        if (hit.type != HitResult.Type.BLOCK) return null
+        return (hit as BlockHitResult).blockPos
     }
 
     private fun isFloorValid(pos: BlockPos): Boolean {

@@ -19,7 +19,7 @@ import java.util.function.Function;
  * everything. we want it just below the leading fixed-top packs, so it still
  * sits under the player's selected packs (the legacy pack) but above vanilla,
  * giving the layering: legacy textures win, hypixel's pack fills the gaps,
- * vanilla underneath. lifted from Server-Pack-Unlocker's PackPositionMixin and
+ * vanilla underneath. lifted from PackPositionMixin and
  * gated on the feature being on.
  */
 @Mixin(Pack.Position.class)

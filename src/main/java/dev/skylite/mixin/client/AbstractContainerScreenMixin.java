@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.skylite.core.module.general.InfoTooltips;
 import dev.skylite.core.module.general.ItemProtection;
+import dev.skylite.core.module.general.NoRender;
 import dev.skylite.core.module.general.SlotBinding;
 import dev.skylite.core.module.mining.CommissionHighlight;
 
@@ -85,6 +86,13 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	private void skylite$keyReleased(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
 		if (SlotBinding.INSTANCE.onKey(event.key(), GLFW.GLFW_RELEASE, this.hoveredSlot)) {
 			cir.setReturnValue(true);
+		}
+	}
+
+	@Inject(method = "extractTooltip", at = @At("HEAD"), cancellable = true)
+	private void skylite$hideEmptyTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci) {
+		if (NoRender.INSTANCE.shouldHideEmptyTooltips(this.hoveredSlot, this.getTitle().getString())) {
+			ci.cancel();
 		}
 	}
 

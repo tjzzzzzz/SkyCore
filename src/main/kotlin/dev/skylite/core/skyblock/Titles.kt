@@ -69,6 +69,11 @@ object Titles {
         player.sendSystemMessage(tagged(stripLegacyPrefix(message), color))
     }
 
-    private fun stripLegacyPrefix(message: String): String =
-        message.replace(Regex("^§[0-9a-fk-or]", RegexOption.IGNORE_CASE), "")
+    private fun stripLegacyPrefix(message: String): String {
+        var out = message
+        while (out.isNotEmpty() && out[0] == '§' && out.length >= 2) {
+            out = out.substring(2)
+        }
+        return out.replace(Regex("^\\[SkyLite]\\s*", RegexOption.IGNORE_CASE), "")
+    }
 }

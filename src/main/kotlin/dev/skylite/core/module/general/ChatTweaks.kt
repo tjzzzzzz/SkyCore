@@ -39,7 +39,7 @@ object ChatTweaks {
         if (opts.msgOnCopy) {
             val previewLen = opts.copyPreviewLength.coerceAtLeast(0)
             if (previewLen == 0) {
-                Titles.info("Copied message")
+                Titles.info("Copied message to clipboard.")
             } else {
                 val preview = if (out.length > previewLen) out.take(previewLen) + "..." else out
                 Titles.info("Copied \"$preview\"")

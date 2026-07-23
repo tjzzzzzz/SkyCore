@@ -351,8 +351,10 @@ object ClickGuiRegistry {
             ToggleOption("Mage Beam", "Hide mage beam fireworks in dungeons.", { noRender.mageBeam }, { noRender.mageBeam = it; SkyLiteConfig.save() }),
             ToggleOption("Ice Spray", "Hide ice spray particles.", { noRender.iceSpray }, { noRender.iceSpray = it; SkyLiteConfig.save() }),
             ToggleOption("Powder Coating", "Hide powder coating dust.", { noRender.powderCoating }, { noRender.powderCoating = it; SkyLiteConfig.save() }),
+            ToggleOption("Soulweaver Skulls", "Hide soulweaver skulls in dungeons.", { noRender.soulweaverSkulls }, { noRender.soulweaverSkulls = it; SkyLiteConfig.save() }),
             ToggleOption("Guided Sheep", "Hide guided sheep in dungeons.", { noRender.guidedSheep }, { noRender.guidedSheep = it; SkyLiteConfig.save() }),
             ToggleOption("Bone Plating", "Hide bone plating entities.", { noRender.bonePlating }, { noRender.bonePlating = it; SkyLiteConfig.save() }),
+            ToggleOption("Healer Fairy", "Hide healer fairy skulls in dungeons.", { noRender.healerFairy }, { noRender.healerFairy = it; SkyLiteConfig.save() }),
             ToggleOption("Tree Bits", "Hide foraging tree block displays.", { noRender.treeBits }, { noRender.treeBits = it; SkyLiteConfig.save() }),
             ToggleOption("Nausea", "Hide nausea overlay.", { noRender.nausea }, { noRender.nausea = it; SkyLiteConfig.save() }),
             ToggleOption("Exp Orbs", "Hide experience orbs.", { noRender.expOrbs }, { noRender.expOrbs = it; SkyLiteConfig.save() })
@@ -402,7 +404,9 @@ object ClickGuiRegistry {
         itemProtectionOption.children = listOf(
             ToggleOption("Protect Starred", "Protect items with stars.", { itemProtection.protectStarred }, { itemProtection.protectStarred = it; SkyLiteConfig.save() }),
             ToggleOption("Protect Recombobulated", "Protect recombed items.", { itemProtection.protectRecomb }, { itemProtection.protectRecomb = it; SkyLiteConfig.save() }),
-            ToggleOption("Protect Max Quality", "Protect 50/50 dungeon items.", { itemProtection.protectMaxQuality }, { itemProtection.protectMaxQuality = it; SkyLiteConfig.save() })
+            ToggleOption("Protect Max Quality", "Protect 50/50 dungeon items.", { itemProtection.protectMaxQuality }, { itemProtection.protectMaxQuality = it; SkyLiteConfig.save() }),
+            ToggleOption("Protect By Value", "Protect high value items.", { itemProtection.protectValue }, { itemProtection.protectValue = it; SkyLiteConfig.save() }),
+            SliderOption("Minimum Value", "Value threshold for Protect By Value.", 100_000f, 100_000_000f, 100_000f, { itemProtection.protectValueMin.toFloat() }, { itemProtection.protectValueMin = it.toDouble(); SkyLiteConfig.save() })
         )
         register(GuiCategory.GENERAL, itemProtectionOption)
 

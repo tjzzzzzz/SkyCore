@@ -2,12 +2,14 @@ package dev.skylite.mixin.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.EntityHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import dev.skylite.core.module.general.ItemProtection;
 import dev.skylite.core.module.mining.CorpseHighlight;
 
 @Mixin(Minecraft.class)
@@ -22,5 +24,14 @@ public class MinecraftMixin {
 	)
 	private void skylite$interactEntity(CallbackInfo ci, @Local Entity entity, @Local EntityHitResult entityHitResult) {
 		CorpseHighlight.INSTANCE.onInteract(entity);
+	}
+
+	@Inject(method = "setScreen", at = @At("HEAD"))
+	private void skylite$screenChange(Screen screen, CallbackInfo ci) {
+		if (screen == null) {
+			ItemProtection.INSTANCE.onScreenClose();
+		} else {
+			ItemProtection.INSTANCE.onScreenOpen(screen.getTitle().getString());
+		}
 	}
 }

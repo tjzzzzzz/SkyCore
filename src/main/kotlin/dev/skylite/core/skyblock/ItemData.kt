@@ -1,12 +1,14 @@
 package dev.skylite.core.skyblock
 
+import com.mojang.authlib.GameProfile
+import com.mojang.authlib.properties.Property
 import dev.skylite.mixin.client.CustomDataAccessor
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.component.CustomData
-import net.minecraft.world.item.component.ItemLore
+import java.util.Optional
 
 object ItemData {
 
@@ -27,6 +29,23 @@ object ItemData {
     fun plain(text: Component?): String {
         if (text == null) return ""
         return text.string.replace(FORMATTING, "")
+    }
+
+    fun hasTexturePayload(stack: ItemStack, payloadHash: Int): Boolean {
+        val profile = profile(stack) ?: return false
+        return texturePayload(profile).map { it.hashCode() == payloadHash }.orElse(false)
+    }
+
+    private fun profile(stack: ItemStack): GameProfile? =
+        stack.get(DataComponents.PROFILE)?.partialProfile()
+
+    private fun texturePayload(profile: GameProfile): Optional<String> {
+        for (property in profile.properties().values()) {
+            if (property is Property && property.name() == "textures") {
+                return Optional.of(property.value())
+            }
+        }
+        return Optional.empty()
     }
 
     fun isMiningTool(stack: ItemStack): Boolean {

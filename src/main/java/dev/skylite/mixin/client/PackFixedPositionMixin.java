@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * player's own packs and win every texture. we only want the legacy pack to win
  * where it has a texture, and hypixel's pack to keep filling in everything else,
  * so the server pack has to become a normal reorderable pack that can sit below
- * the legacy one. this is the same approach Server-Pack-Unlocker uses.
+ * the legacy one.
  *
  * gated on the feature being on, so with the toggle off vanilla ordering is
  * completely untouched.

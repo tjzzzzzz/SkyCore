@@ -31,8 +31,8 @@ object ScathaMining {
             if (spawnCooldown <= 0) return@register
             spawnCooldown--
             if (spawnCooldown == 0 && active() && SkyLiteConfig.instance.scathaMining.cooldown) {
-                Titles.show("§a§lCOOLDOWN ENDED", stay = 20)
-                Titles.info("§aWorm spawn cooldown ended!")
+                Titles.show("COOLDOWN ENDED", stay = 20)
+                Titles.success("Worm spawn cooldown ended!")
                 Titles.playHarp()
             }
         }
@@ -46,10 +46,10 @@ object ScathaMining {
         seen.add(entity.id)
         if (SkyLiteConfig.instance.scathaMining.alert) {
             if (type == WormType.Scatha) {
-                Titles.show("§cScatha", stay = 20)
+                Titles.show("Scatha", stay = 20)
                 Titles.playPling()
             } else {
-                Titles.show("§eWorm", stay = 20)
+                Titles.show("Worm", stay = 20)
                 Titles.playBass()
             }
         }
@@ -61,7 +61,7 @@ object ScathaMining {
             (LocationManager.current == IslandType.CRYSTAL_HOLLOWS || TabListCache.isInArea("Crystal Hollows"))
 
     private fun wormType(name: String): WormType {
-        if (!name.endsWith("❤")) return WormType.None
+        if (!name.contains('\u2756') && !name.endsWith("\u2756")) return WormType.None
         if (name.startsWith("[Lv10] Scatha ")) return WormType.Scatha
         if (name.startsWith("[Lv5] Worm ")) return WormType.Worm
         return WormType.None
