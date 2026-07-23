@@ -3,21 +3,20 @@ package dev.skycore.mixin.client;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.skycore.core.module.general.InfoTooltips;
 import dev.skycore.core.module.general.ItemProtection;
 import dev.skycore.core.module.general.NoRender;
@@ -37,8 +36,10 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	@Shadow
 	protected Slot hoveredSlot;
 
-	@Shadow
-	public abstract Component getTitle();
+	@Unique
+	private String skycore$title() {
+		return ((Screen) (Object) this).getTitle().getString();
+	}
 
 	@Inject(
 		method = "extractContents",
@@ -48,7 +49,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		)
 	)
 	private void skycore$beforeHighlight(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
-		CommissionHighlight.INSTANCE.onScreenRender(context, this.getTitle().getString(), this.menu);
+		CommissionHighlight.INSTANCE.onScreenRender(context, this.skycore$title(), this.menu);
 		SlotBinding.INSTANCE.onRender(context, this.menu, this.hoveredSlot);
 	}
 
@@ -70,28 +71,19 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			}
 		}
 		boolean throwing = actionType == ContainerInput.THROW;
-		if (ItemProtection.INSTANCE.shouldCancelClick(stack, this.getTitle().getString(), throwing)) {
+		if (ItemProtection.INSTANCE.shouldCancelClick(stack, this.skycore$title(), throwing)) {
 			ci.cancel();
 		}
 	}
 
-	@Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-	private void skycore$keyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
-		if (SlotBinding.INSTANCE.onKey(event.key(), GLFW.GLFW_PRESS, this.hoveredSlot)) {
-			cir.setReturnValue(true);
-		}
-	}
-
-	@Inject(method = "keyReleased", at = @At("HEAD"), cancellable = true)
-	private void skycore$keyReleased(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
-		if (SlotBinding.INSTANCE.onKey(event.key(), GLFW.GLFW_RELEASE, this.hoveredSlot)) {
-			cir.setReturnValue(true);
-		}
+	@Inject(method = "containerTick", at = @At("HEAD"))
+	private void skycore$slotBindingTick(CallbackInfo ci) {
+		SlotBinding.INSTANCE.tickKeyState(this.hoveredSlot);
 	}
 
 	@Inject(method = "extractTooltip", at = @At("HEAD"), cancellable = true)
 	private void skycore$hideEmptyTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci) {
-		if (NoRender.INSTANCE.shouldHideEmptyTooltips(this.hoveredSlot, this.getTitle().getString())) {
+		if (NoRender.INSTANCE.shouldHideEmptyTooltips(this.hoveredSlot, this.skycore$title())) {
 			ci.cancel();
 		}
 	}

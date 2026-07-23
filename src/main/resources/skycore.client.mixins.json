@@ -25,7 +25,7 @@
     "ChatScreenMixin",
     "LocalPlayerMixin",
     "LightmapRenderStateExtractorMixin",
-    "LevelRendererMixin",
+    "LevelExtractorMixin",
     "ScreenEffectRendererMixin",
     "BossHealthOverlayMixin",
     "ClientLevelMixin",
