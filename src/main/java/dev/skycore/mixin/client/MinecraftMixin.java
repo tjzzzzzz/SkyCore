@@ -26,7 +26,7 @@ public class MinecraftMixin {
 		CorpseHighlight.INSTANCE.onInteract(entity);
 	}
 
-	@Inject(method = "setScreen", at = @At("HEAD"))
+	@Inject(method = "setScreenAndShow", at = @At("HEAD"))
 	private void skycore$screenChange(Screen screen, CallbackInfo ci) {
 		if (screen == null) {
 			ItemProtection.INSTANCE.onScreenClose();
