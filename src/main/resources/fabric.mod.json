@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "skylite",
+  "version": "${version}",
+  "name": "SkyLite",
+  "description": "A lightweight, high-performance all-in-one QOL client mod for Hypixel Skyblock. Native 1.21+ utilities, none of the 1.8.9 bloat.",
+  "authors": [
+    "Tuure"
+  ],
+  "contact": {
+    "homepage": "https://github.com/skylite/skylite",
+    "sources": "https://github.com/skylite/skylite",
+    "issues": "https://github.com/skylite/skylite/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/skylite/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.skylite.SkyLite"
+      }
+    ],
+    "modmenu": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.skylite.config.ui.SkyLiteModMenu"
+      }
+    ]
+  },
+  "mixins": [
+    {
+      "config": "skylite.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "accessWidener": "skylite.classtweaker",
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=25",
+    "yet_another_config_lib_v3": "*",
+    "hm-api": ">=1.0.4+26.2"
+  },
+  "recommends": {
+    "modmenu": "*"
+  },
+  "suggests": {
+    "cloth-config": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.github": "https://github.com/skylite/skylite"
+      }
+    }
+  }
+}
