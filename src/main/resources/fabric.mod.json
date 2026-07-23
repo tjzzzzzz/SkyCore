@@ -1,41 +1,41 @@
 {
   "schemaVersion": 1,
-  "id": "skylite",
+  "id": "skycore",
   "version": "${version}",
-  "name": "SkyLite",
+  "name": "SkyCore",
   "description": "A lightweight, high-performance all-in-one QOL client mod for Hypixel Skyblock. Native 1.21+ utilities, none of the 1.8.9 bloat.",
   "authors": [
     "Tuure"
   ],
   "contact": {
-    "homepage": "https://github.com/skylite/skylite",
-    "sources": "https://github.com/skylite/skylite",
-    "issues": "https://github.com/skylite/skylite/issues"
+    "homepage": "https://github.com/skycore/skycore",
+    "sources": "https://github.com/skycore/skycore",
+    "issues": "https://github.com/skycore/skycore/issues"
   },
   "license": "MIT",
-  "icon": "assets/skylite/icon.png",
+  "icon": "assets/skycore/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
       {
         "adapter": "kotlin",
-        "value": "dev.skylite.SkyLite"
+        "value": "dev.skycore.SkyCore"
       }
     ],
     "modmenu": [
       {
         "adapter": "kotlin",
-        "value": "dev.skylite.config.ui.SkyLiteModMenu"
+        "value": "dev.skycore.config.ui.SkyCoreModMenu"
       }
     ]
   },
   "mixins": [
     {
-      "config": "skylite.client.mixins.json",
+      "config": "skycore.client.mixins.json",
       "environment": "client"
     }
   ],
-  "accessWidener": "skylite.classtweaker",
+  "accessWidener": "skycore.classtweaker",
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric-api": "*",
@@ -54,7 +54,7 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.github": "https://github.com/skylite/skylite"
+        "modmenu.github": "https://github.com/skycore/skycore"
       }
     }
   }
