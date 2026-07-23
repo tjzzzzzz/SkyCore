@@ -105,6 +105,72 @@ class SkyCoreConfig {
     @SerialEntry
     var skillTracker: SkillTrackerOptions = SkillTrackerOptions()
 
+    @SerialEntry
+    var terminalSolvers: TerminalSolversOptions = TerminalSolversOptions()
+
+    @SerialEntry
+    var deviceSolvers: DeviceSolversOptions = DeviceSolversOptions()
+
+    @SerialEntry
+    var leapOverlay: LeapOverlayOptions = LeapOverlayOptions()
+
+    @SerialEntry
+    var croesusSolver: CroesusSolverOptions = CroesusSolverOptions()
+
+    @SerialEntry
+    var dungeonChestValue: DungeonChestValueOptions = DungeonChestValueOptions()
+
+    @SerialEntry
+    var quickClose: QuickCloseOptions = QuickCloseOptions()
+
+    @SerialEntry
+    var melodyMessage: MelodyMessageOptions = MelodyMessageOptions()
+
+    @SerialEntry
+    var secretChime: SecretChimeOptions = SecretChimeOptions()
+
+    @SerialEntry
+    var witherDragons: WitherDragonsOptions = WitherDragonsOptions()
+
+    @SerialEntry
+    var scoreCalculator: ScoreCalculatorOptions = ScoreCalculatorOptions()
+
+    @SerialEntry
+    var mimicMessage: MimicMessageOptions = MimicMessageOptions()
+
+    @SerialEntry
+    var princeMessage: PrinceMessageOptions = PrinceMessageOptions()
+
+    @SerialEntry
+    var terracottaTimer: TerracottaTimerOptions = TerracottaTimerOptions()
+
+    @SerialEntry
+    var keyHighlight: KeyHighlightOptions = KeyHighlightOptions()
+
+    @SerialEntry
+    var lividSolver: LividSolverOptions = LividSolverOptions()
+
+    @SerialEntry
+    var secretBatHighlight: SecretBatHighlightOptions = SecretBatHighlightOptions()
+
+    @SerialEntry
+    var spiritBowHighlight: SpiritBowHighlightOptions = SpiritBowHighlightOptions()
+
+    @SerialEntry
+    var relicHighlight: RelicHighlightOptions = RelicHighlightOptions()
+
+    @SerialEntry
+    var classNametags: ClassNametagsOptions = ClassNametagsOptions()
+
+    @SerialEntry
+    var platformHighlight: PlatformHighlightOptions = PlatformHighlightOptions()
+
+    @SerialEntry
+    var minibossHighlight: MinibossHighlightOptions = MinibossHighlightOptions()
+
+    @SerialEntry
+    var starredMobHighlight: StarredMobHighlightOptions = StarredMobHighlightOptions()
+
     class HudPlacement {
         var x: Float = 0.01f
         var y: Float = 0.04f
@@ -350,6 +416,193 @@ class SkyCoreConfig {
     class SkillTrackerOptions {
         var enabled: Boolean = false
         var active: MutableMap<String, Boolean> = mutableMapOf()
+    }
+
+    class TerminalSolversOptions {
+        var enabled: Boolean = false
+        var panes: Boolean = false
+        var panesColor: Int = 0xFF5CA0BF.toInt()
+        var startsWith: Boolean = false
+        var startsWithColor: Int = 0xFF5CA0BF.toInt()
+        var select: Boolean = false
+        var selectColor: Int = 0xFF5CA0BF.toInt()
+        var inOrder: Boolean = false
+        var inOrderDrawNumbers: Boolean = false
+        var inOrderColorFirst: Int = 0xFF5CA0BF.toInt()
+        var inOrderColorSecond: Int = 0xFF45788F.toInt()
+        var inOrderColorThird: Int = 0xFF2E505F.toInt()
+        var colors: Boolean = false
+        var colorsColorFirst: Int = 0xFF5CA0BF.toInt()
+        var colorsColorSecond: Int = 0xFF45788F.toInt()
+        var firstClickTicks: Int = 10
+        var soundOnClick: Boolean = false
+        var clickSound: String = "minecraft:entity.blaze.hurt"
+        var clickSoundVolume: Double = 2.0
+        var clickSoundPitch: Double = 2.0
+        var backgroundColor: Int = 0xFF555555.toInt()
+    }
+
+    class DeviceSolversOptions {
+        var enabled: Boolean = false
+        var sharpshooter: Boolean = false
+        var arrowAlign: Boolean = false
+        var sharpDoneAlert: Boolean = false
+        var sharpTargetColorFill: Int = 0xFF55FF55.toInt()
+        var sharpTargetColorOutline: Int = 0xFF55FF55.toInt()
+        var sharpHitColorFill: Int = 0xFFFF5555.toInt()
+        var sharpHitColorOutline: Int = 0xFFFF5555.toInt()
+        var alignBlockWrong: Boolean = false
+        var alignBlockInvert: Boolean = false
+    }
+
+    class LeapOverlayOptions {
+        var enabled: Boolean = false
+        var send: Boolean = false
+        var message: String = "/pc Leaped to {name}!"
+        var scale: Double = 3.0
+        var firstKey: Int = -1
+        var secondKey: Int = -1
+        var thirdKey: Int = -1
+        var fourthKey: Int = -1
+        var healerColor: Int = 0xFFECB50C.toInt()
+        var mageColor: Int = 0xFF1793C4.toInt()
+        var bersColor: Int = 0xFFE7413C.toInt()
+        var archColor: Int = 0xFF4A14B7.toInt()
+        var tankColor: Int = 0xFF768F46.toInt()
+    }
+
+    class CroesusSolverOptions {
+        var enabled: Boolean = false
+        var profitColor: Int = 0xFF55FF55.toInt()
+        var profitSecondaryColor: Int = 0xFFFFFF55.toInt()
+        var profitKeyColor: Int = 0xFF55FFFF.toInt()
+        var profitHighColor: Int = 0xFFFF55FF.toInt()
+        var profitHighThreshold: Double = 5_000_000.0
+        var unopenedColor: Int = 0xFF55FF55.toInt()
+        var rerolledColor: Int = 0xFF55FFFF.toInt()
+        var openedColor: Int = 0xFFFF5555.toInt()
+        var openedKeyColor: Int = 0xFF555555.toInt()
+        var valueTooltip: Boolean = true
+        var floorLabel: Boolean = true
+    }
+
+    class DungeonChestValueOptions {
+        var enabled: Boolean = false
+        var background: Int = 0xCC202020.toInt()
+    }
+
+    class QuickCloseOptions {
+        var enabled: Boolean = false
+    }
+
+    class MelodyMessageOptions {
+        var enabled: Boolean = false
+        var msg: String = "/pc Melody Terminal start!"
+        var progress: Boolean = false
+        var progressMsg: String = "/pc Melody {percent}"
+    }
+
+    class SecretChimeOptions {
+        var enabled: Boolean = false
+        var itemsToggle: Boolean = false
+        var itemsSound: String = "minecraft:entity.blaze.hurt"
+        var itemsVolume: Double = 2.0
+        var itemsPitch: Double = 2.0
+        var chestToggle: Boolean = false
+        var chestSound: String = "minecraft:entity.blaze.hurt"
+        var chestVolume: Double = 2.0
+        var chestPitch: Double = 2.0
+        var essenceToggle: Boolean = false
+        var essenceSound: String = "minecraft:entity.blaze.hurt"
+        var essenceVolume: Double = 2.0
+        var essencePitch: Double = 2.0
+        var batToggle: Boolean = false
+        var batSound: String = "minecraft:entity.blaze.hurt"
+        var batVolume: Double = 2.0
+        var batPitch: Double = 2.0
+        var leverToggle: Boolean = false
+        var leverSound: String = "minecraft:entity.blaze.hurt"
+        var leverVolume: Double = 2.0
+        var leverPitch: Double = 2.0
+    }
+
+    class WitherDragonsOptions {
+        var enabled: Boolean = false
+        var alert: Boolean = false
+        var power: Double = 0.0
+        var powerEasy: Double = 0.0
+        var boxes: Boolean = false
+        var hitboxes: Boolean = false
+        var tracers: Boolean = false
+        var waypoints: String = "Disabled"
+        var timer: Boolean = false
+        var health: Boolean = false
+        var trackIceSpray: Boolean = false
+    }
+
+    class ScoreCalculatorOptions {
+        var enabled: Boolean = false
+        var paulState: String = "Auto"
+        var sendMsg270: Boolean = false
+        var msg270: String = "/pc 270 Score"
+        var showTitle270: Boolean = false
+        var title270: String = "&c&l270"
+        var sendMsg300: Boolean = false
+        var msg300: String = "/pc 300 Score"
+        var showTitle300: Boolean = false
+        var title300: String = "&c&l300"
+    }
+
+    class MimicMessageOptions {
+        var enabled: Boolean = false
+        var message: String = "/pc Mimic Killed!"
+    }
+
+    class PrinceMessageOptions {
+        var enabled: Boolean = false
+        var message: String = "/pc Prince Killed!"
+    }
+
+    class TerracottaTimerOptions {
+        var enabled: Boolean = false
+        var scale: Double = 0.4
+    }
+
+    class KeyHighlightOptions {
+        var enabled: Boolean = false
+    }
+
+    class LividSolverOptions {
+        var enabled: Boolean = false
+    }
+
+    class SecretBatHighlightOptions {
+        var enabled: Boolean = false
+    }
+
+    class SpiritBowHighlightOptions {
+        var enabled: Boolean = false
+    }
+
+    class RelicHighlightOptions {
+        var enabled: Boolean = false
+    }
+
+    class ClassNametagsOptions {
+        var enabled: Boolean = false
+    }
+
+    class PlatformHighlightOptions {
+        var enabled: Boolean = false
+        var healerOnly: Boolean = true
+    }
+
+    class MinibossHighlightOptions {
+        var enabled: Boolean = false
+    }
+
+    class StarredMobHighlightOptions {
+        var enabled: Boolean = false
     }
 
     companion object {

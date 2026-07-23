@@ -120,6 +120,32 @@ object WorldBoxes {
         outline(box, outline, throughWalls)
     }
 
+    fun line(from: net.minecraft.world.phys.Vec3, to: net.minecraft.world.phys.Vec3, color: Int, width: Float = 4f) {
+        val cam = camera ?: return
+        val buffer = buffer(LINES_THROUGH)
+        val matrix = Matrix4f().translate((-cam.pos.x).toFloat(), (-cam.pos.y).toFloat(), (-cam.pos.z).toFloat())
+        val a = (color ushr 24 and 0xFF) / 255f
+        val r = (color ushr 16 and 0xFF) / 255f
+        val g = (color ushr 8 and 0xFF) / 255f
+        val b = (color and 0xFF) / 255f
+        val dx = (to.x - from.x).toFloat()
+        val dy = (to.y - from.y).toFloat()
+        val dz = (to.z - from.z).toFloat()
+        val len = kotlin.math.sqrt(dx * dx + dy * dy + dz * dz).coerceAtLeast(1e-6f)
+        edge(
+            buffer, matrix,
+            from.x.toFloat(), from.y.toFloat(), from.z.toFloat(),
+            to.x.toFloat(), to.y.toFloat(), to.z.toFloat(),
+            dx / len, dy / len, dz / len,
+            r, g, b, a, width
+        )
+    }
+
+    fun tracer(pos: net.minecraft.world.phys.Vec3, color: Int, width: Float = 4f) {
+        val cam = camera ?: return
+        line(cam.pos, pos, color, width)
+    }
+
     private fun buffer(pipeline: RenderPipeline): VertexConsumer {
         if (previousDraw == null || pipeline !== previousPipeline) {
             val format = requireNotNull(pipeline.getVertexFormatBinding(0))

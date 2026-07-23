@@ -56,7 +56,7 @@ class HudEditorScreen(private val parent: Screen?) : Screen(Component.literal("H
             val hovered = Ui.inBounds(mouseX.toDouble(), mouseY.toDouble(), x, y, w, h)
             val tint = if (active || hovered) Theme.ACCENT else Ui.withAlpha(Theme.ACCENT, 0.4f)
 
-            Ui.frame(g, x - 2, y - 2, w + 4, h + 4, tint, 4)
+            Ui.frame(g, x - 2, y - 2, w + 4, h + 4, tint, 0)
 
             g.fill(x - 2, y - 2, x + 4, y - 1, tint)
             g.fill(x + w - 4, y + h + 1, x + w + 2, y + h + 2, tint)

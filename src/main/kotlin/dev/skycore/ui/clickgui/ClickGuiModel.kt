@@ -590,20 +590,253 @@ object ClickGuiRegistry {
             ).withKeywords("commission", "hud", "progress", "display", "percent")
         )
 
+        val terminalSolvers = SkyCoreConfig.instance.terminalSolvers
+        val terminalOption = ToggleOption(
+            "Terminal Solvers",
+            "Highlights and blocks wrong clicks on F7/M7 terminals.",
+            { terminalSolvers.enabled },
+            { terminalSolvers.enabled = it; SkyCoreConfig.save() }
+        ).withKeywords("f7", "m7", "terminal", "panes", "melody", "device", "necron")
+        terminalOption.children = listOf(
+            ToggleOption("Correct Panes", "Solve Correct all the panes.", { terminalSolvers.panes }, { terminalSolvers.panes = it; SkyCoreConfig.save() }),
+            ToggleOption("Starts With", "Solve What starts with terminals.", { terminalSolvers.startsWith }, { terminalSolvers.startsWith = it; SkyCoreConfig.save() }),
+            ToggleOption("Select All", "Solve Select all the color items.", { terminalSolvers.select }, { terminalSolvers.select = it; SkyCoreConfig.save() }),
+            ToggleOption("Click in Order", "Solve Click in order terminals.", { terminalSolvers.inOrder }, { terminalSolvers.inOrder = it; SkyCoreConfig.save() }),
+            ToggleOption("Draw Order Numbers", "Show numbers on Click in order.", { terminalSolvers.inOrderDrawNumbers }, { terminalSolvers.inOrderDrawNumbers = it; SkyCoreConfig.save() }),
+            ToggleOption("Change Colors", "Solve Change all to same color.", { terminalSolvers.colors }, { terminalSolvers.colors = it; SkyCoreConfig.save() }),
+            ToggleOption("Click Sound", "Play a sound when clicking solutions.", { terminalSolvers.soundOnClick }, { terminalSolvers.soundOnClick = it; SkyCoreConfig.save() })
+        )
+        register(GuiCategory.DUNGEONS, terminalOption)
+
+        val deviceSolvers = SkyCoreConfig.instance.deviceSolvers
+        val deviceOption = ToggleOption(
+            "Device Solvers",
+            "Helps with F7/M7 devices like Arrow Align and Sharpshooter.",
+            { deviceSolvers.enabled },
+            { deviceSolvers.enabled = it; SkyCoreConfig.save() }
+        ).withKeywords("arrow", "align", "sharpshooter", "device", "f7", "m7")
+        deviceOption.children = listOf(
+            ToggleOption("Arrow Align", "Shows clicks needed for Arrow Align.", { deviceSolvers.arrowAlign }, { deviceSolvers.arrowAlign = it; SkyCoreConfig.save() }),
+            ToggleOption("Block Wrong Align", "Prevents clicking finished Arrow Align frames.", { deviceSolvers.alignBlockWrong }, { deviceSolvers.alignBlockWrong = it; SkyCoreConfig.save() }),
+            ToggleOption("Invert Align Block", "Invert shift behavior for Arrow Align blocking.", { deviceSolvers.alignBlockInvert }, { deviceSolvers.alignBlockInvert = it; SkyCoreConfig.save() }),
+            ToggleOption("Sharpshooter", "Highlights Sharpshooter targets.", { deviceSolvers.sharpshooter }, { deviceSolvers.sharpshooter = it; SkyCoreConfig.save() }),
+            ToggleOption("Sharpshooter Done Alert", "Title when Sharpshooter finishes.", { deviceSolvers.sharpDoneAlert }, { deviceSolvers.sharpDoneAlert = it; SkyCoreConfig.save() })
+        )
+        register(GuiCategory.DUNGEONS, deviceOption)
+
         register(
             GuiCategory.DUNGEONS,
-            transientOption("Secret Waypoints", "Marks room secrets while you run.")
-                .withKeywords("secrets", "catacombs", "route", "dungeon", "esp")
+            ToggleOption(
+                "Leap Overlay",
+                "Replaces Spirit Leap with a class-colored overlay.",
+                { SkyCoreConfig.instance.leapOverlay.enabled },
+                { SkyCoreConfig.instance.leapOverlay.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("leap", "spirit", "overlay", "class")
+        )
+
+        val croesus = SkyCoreConfig.instance.croesusSolver
+        val croesusOption = ToggleOption(
+            "Croesus Solver",
+            "Highlights profitable chests and unopened floors in Croesus.",
+            { croesus.enabled },
+            { croesus.enabled = it; SkyCoreConfig.save() }
+        ).withKeywords("croesus", "chest", "loot", "profit", "kismet")
+        croesusOption.children = listOf(
+            ToggleOption("Value Tooltip", "Show chest value in tooltips.", { croesus.valueTooltip }, { croesus.valueTooltip = it; SkyCoreConfig.save() }),
+            ToggleOption("Floor Labels", "Show floor labels on Croesus pages.", { croesus.floorLabel }, { croesus.floorLabel = it; SkyCoreConfig.save() })
+        )
+        register(GuiCategory.DUNGEONS, croesusOption)
+
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Dungeon Chest Value",
+                "Shows estimated profit while opening dungeon reward chests.",
+                { SkyCoreConfig.instance.dungeonChestValue.enabled },
+                { SkyCoreConfig.instance.dungeonChestValue.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("chest", "value", "profit", "reward")
+        )
+
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Quick Close",
+                "Closes reward chests when pressing movement keys.",
+                { SkyCoreConfig.instance.quickClose.enabled },
+                { SkyCoreConfig.instance.quickClose.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("close", "chest", "wasd", "quick")
+        )
+
+        val melody = SkyCoreConfig.instance.melodyMessage
+        val melodyOption = ToggleOption(
+            "Melody Message",
+            "Announces Melody terminal start and progress.",
+            { melody.enabled },
+            { melody.enabled = it; SkyCoreConfig.save() }
+        ).withKeywords("melody", "terminal", "party", "chat")
+        melodyOption.children = listOf(
+            ToggleOption("Progress Messages", "Send Melody percent progress.", { melody.progress }, { melody.progress = it; SkyCoreConfig.save() })
+        )
+        register(GuiCategory.DUNGEONS, melodyOption)
+
+        val secretChime = SkyCoreConfig.instance.secretChime
+        val secretChimeOption = ToggleOption(
+            "Secret Chime",
+            "Plays sounds for secret items, chests, bats, levers, and essence.",
+            { secretChime.enabled },
+            { secretChime.enabled = it; SkyCoreConfig.save() }
+        ).withKeywords("secret", "chime", "bat", "chest", "essence", "lever")
+        secretChimeOption.children = listOf(
+            ToggleOption("Items", "Chime when picking up secret items.", { secretChime.itemsToggle }, { secretChime.itemsToggle = it; SkyCoreConfig.save() }),
+            ToggleOption("Chests", "Chime when opening secret chests.", { secretChime.chestToggle }, { secretChime.chestToggle = it; SkyCoreConfig.save() }),
+            ToggleOption("Essence", "Chime when clicking wither essence.", { secretChime.essenceToggle }, { secretChime.essenceToggle = it; SkyCoreConfig.save() }),
+            ToggleOption("Bats", "Chime when secret bats die.", { secretChime.batToggle }, { secretChime.batToggle = it; SkyCoreConfig.save() }),
+            ToggleOption("Levers", "Chime when flipping secret levers.", { secretChime.leverToggle }, { secretChime.leverToggle = it; SkyCoreConfig.save() })
+        )
+        register(GuiCategory.DUNGEONS, secretChimeOption)
+
+        val witherDragons = SkyCoreConfig.instance.witherDragons
+        val witherOption = ToggleOption(
+            "Wither Dragons",
+            "Tracks M7 wither dragon spawns, boxes, and health.",
+            { witherDragons.enabled },
+            { witherDragons.enabled = it; SkyCoreConfig.save() }
+        ).withKeywords("dragon", "m7", "wither", "split", "ice spray")
+        witherOption.children = listOf(
+            ToggleOption("Spawn Alert", "Announce priority dragon on split.", { witherDragons.alert }, { witherDragons.alert = it; SkyCoreConfig.save() }),
+            ToggleOption("Spawn Boxes", "Outline dragon spawn areas.", { witherDragons.boxes }, { witherDragons.boxes = it; SkyCoreConfig.save() }),
+            ToggleOption("Hitboxes", "Outline alive dragon hitboxes.", { witherDragons.hitboxes }, { witherDragons.hitboxes = it; SkyCoreConfig.save() }),
+            ToggleOption("Tracers", "Trace to priority spawning dragon.", { witherDragons.tracers }, { witherDragons.tracers = it; SkyCoreConfig.save() }),
+            ToggleOption("Spawn Timer", "Show countdown while dragons spawn.", { witherDragons.timer }, { witherDragons.timer = it; SkyCoreConfig.save() }),
+            ToggleOption("Health", "Show dragon health labels.", { witherDragons.health }, { witherDragons.health = it; SkyCoreConfig.save() }),
+            ToggleOption("Ice Spray Tracker", "Chat when a dragon is ice sprayed.", { witherDragons.trackIceSpray }, { witherDragons.trackIceSpray = it; SkyCoreConfig.save() })
+        )
+        register(GuiCategory.DUNGEONS, witherOption)
+
+        val scoreCalc = SkyCoreConfig.instance.scoreCalculator
+        val scoreOption = ToggleOption(
+            "Score Calculator",
+            "Tracks dungeon score and shows it on the HUD.",
+            { scoreCalc.enabled },
+            { scoreCalc.enabled = it; SkyCoreConfig.save() }
+        ).withKeywords("score", "s+", "270", "300", "paul")
+        scoreOption.children = listOf(
+            ToggleOption("Send 270 Message", "Party chat when reaching 270 score.", { scoreCalc.sendMsg270 }, { scoreCalc.sendMsg270 = it; SkyCoreConfig.save() }),
+            ToggleOption("Show 270 Title", "Title when reaching 270 score.", { scoreCalc.showTitle270 }, { scoreCalc.showTitle270 = it; SkyCoreConfig.save() }),
+            ToggleOption("Send 300 Message", "Party chat when reaching 300 score.", { scoreCalc.sendMsg300 }, { scoreCalc.sendMsg300 = it; SkyCoreConfig.save() }),
+            ToggleOption("Show 300 Title", "Title when reaching 300 score.", { scoreCalc.showTitle300 }, { scoreCalc.showTitle300 = it; SkyCoreConfig.save() })
+        )
+        register(GuiCategory.DUNGEONS, scoreOption)
+
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Mimic Message",
+                "Announces when Mimic is killed.",
+                { SkyCoreConfig.instance.mimicMessage.enabled },
+                { SkyCoreConfig.instance.mimicMessage.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("mimic", "party", "chat")
         )
         register(
             GuiCategory.DUNGEONS,
-            transientOption("Terminal Solver", "Solves F7 and M7 device terminals.")
-                .withKeywords("f7", "m7", "device", "terms", "necron", "puzzle")
+            ToggleOption(
+                "Prince Message",
+                "Announces when Prince is killed.",
+                { SkyCoreConfig.instance.princeMessage.enabled },
+                { SkyCoreConfig.instance.princeMessage.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("prince", "party", "chat")
         )
         register(
             GuiCategory.DUNGEONS,
-            transientOption("Croesus Helper", "Highlights unopened chests in Croesus.")
-                .withKeywords("chest", "loot", "rewards", "unopened")
+            ToggleOption(
+                "Terracotta Timer",
+                "Shows terracotta respawn timer in F6/M6.",
+                { SkyCoreConfig.instance.terracottaTimer.enabled },
+                { SkyCoreConfig.instance.terracottaTimer.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("terracotta", "gyro", "timer", "f6")
+        )
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Key Highlight",
+                "Highlights wither and blood keys.",
+                { SkyCoreConfig.instance.keyHighlight.enabled },
+                { SkyCoreConfig.instance.keyHighlight.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("key", "wither", "blood", "highlight")
+        )
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Livid Solver",
+                "Highlights the correct Livid on F5/M5.",
+                { SkyCoreConfig.instance.lividSolver.enabled },
+                { SkyCoreConfig.instance.lividSolver.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("livid", "f5", "m5", "boss")
+        )
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Secret Bat Highlight",
+                "Highlights secret bats in dungeons.",
+                { SkyCoreConfig.instance.secretBatHighlight.enabled },
+                { SkyCoreConfig.instance.secretBatHighlight.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("bat", "secret", "highlight")
+        )
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Spirit Bow Highlight",
+                "Highlights the Spirit Bow on F4/M4.",
+                { SkyCoreConfig.instance.spiritBowHighlight.enabled },
+                { SkyCoreConfig.instance.spiritBowHighlight.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("spirit", "bow", "f4", "m4")
+        )
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Relic Highlight",
+                "Highlights your M7 king relic placement spot.",
+                { SkyCoreConfig.instance.relicHighlight.enabled },
+                { SkyCoreConfig.instance.relicHighlight.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("relic", "m7", "p5", "king")
+        )
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Class Nametags",
+                "Shows class colored nametags for teammates.",
+                { SkyCoreConfig.instance.classNametags.enabled },
+                { SkyCoreConfig.instance.classNametags.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("class", "nametag", "teammate")
+        )
+        val platform = SkyCoreConfig.instance.platformHighlight
+        val platformOption = ToggleOption(
+            "Platform Highlight",
+            "Highlights the Healer 3x3 platform after F7/M7 terminals.",
+            { platform.enabled },
+            { platform.enabled = it; SkyCoreConfig.save() }
+        ).withKeywords("platform", "healer", "f7", "m7", "mine")
+        platformOption.children = listOf(
+            ToggleOption("Healer Only", "Only show platform highlights as Healer.", { platform.healerOnly }, { platform.healerOnly = it; SkyCoreConfig.save() })
+        )
+        register(GuiCategory.DUNGEONS, platformOption)
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Miniboss Highlight",
+                "Highlights dungeon minibosses.",
+                { SkyCoreConfig.instance.minibossHighlight.enabled },
+                { SkyCoreConfig.instance.minibossHighlight.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("miniboss", "highlight", "esp")
+        )
+        register(
+            GuiCategory.DUNGEONS,
+            ToggleOption(
+                "Starred Mob Highlight",
+                "Highlights starred dungeon mobs.",
+                { SkyCoreConfig.instance.starredMobHighlight.enabled },
+                { SkyCoreConfig.instance.starredMobHighlight.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("starred", "mob", "highlight", "esp")
         )
 
         register(

@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import dev.skycore.core.dungeon.DungeonEvents;
 import dev.skycore.core.module.mining.GemstoneDesyncFix;
 
 @Mixin(LevelChunk.class)
@@ -18,6 +19,8 @@ public abstract class LevelChunkMixin {
 
 	@Inject(method = "setBlockState", at = @At("HEAD"))
 	private void skycore$blockUpdate(BlockPos pos, BlockState state, int flags, CallbackInfoReturnable<BlockState> cir) {
-		GemstoneDesyncFix.INSTANCE.onBlockUpdate(pos, this.getBlockState(pos), state);
+		BlockState old = this.getBlockState(pos);
+		GemstoneDesyncFix.INSTANCE.onBlockUpdate(pos, old, state);
+		DungeonEvents.INSTANCE.fireBlockUpdate(pos, old, state);
 	}
 }

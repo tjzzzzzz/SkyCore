@@ -33,7 +33,9 @@
     "HudMixin",
     "GameRendererMixin",
     "EntityRendererMixin",
-    "AbstractRecipeBookScreenMixin"
+    "AbstractRecipeBookScreenMixin",
+    "EntityMixin",
+    "PlayerTabOverlayAccessor"
   ],
   "mixins": []
 }

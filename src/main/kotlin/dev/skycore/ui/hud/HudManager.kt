@@ -11,7 +11,14 @@ import net.minecraft.resources.Identifier
 object HudManager {
 
     val widgets: List<HudWidget> by lazy {
-        listOf(InfoBarWidget(), SprintWidget(), CommissionsWidget(), SkillTrackerWidget())
+        listOf(
+            InfoBarWidget(),
+            SprintWidget(),
+            CommissionsWidget(),
+            SkillTrackerWidget(),
+            DungeonScoreWidget(),
+            TerracottaGyroWidget()
+        )
     }
 
     @Volatile

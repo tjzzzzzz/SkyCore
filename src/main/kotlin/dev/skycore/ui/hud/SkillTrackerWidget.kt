@@ -3,8 +3,6 @@ package dev.skycore.ui.hud
 import dev.skycore.config.SkyCoreConfig
 import dev.skycore.core.module.general.SkillTracker
 import dev.skycore.ui.render.Fonts
-import dev.skycore.ui.render.Ui
-import dev.skycore.ui.theme.Theme
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.network.chat.Component
@@ -12,15 +10,16 @@ import net.minecraft.network.chat.Component
 class SkillTrackerWidget : HudWidget("skill_tracker", "Skill Tracker", defaultX = 0.01f, defaultY = 0.28f) {
 
     private companion object {
-        val TITLE: Component = Fonts.label("SKILL TRACKER", Fonts.SMALL)
-        const val PAD = 10
-        const val TITLE_H = 14
-        const val ROW_H = 12
-        const val MIN_W = 130
+        val TITLE: Component = Fonts.label("Skill Tracker", Fonts.SMALL)
+        const val PAD_X = 7
+        const val PAD_Y = 6
+        const val TITLE_H = 11
+        const val ROW_H = 11
+        const val MIN_W = 120
     }
 
     private var cachedWidth = MIN_W
-    private var cachedHeight = PAD + TITLE_H + 6 + ROW_H * 2 + PAD
+    private var cachedHeight = PAD_Y + TITLE_H + 5 + ROW_H * 2 + PAD_Y
 
     override val enabled: Boolean
         get() = SkyCoreConfig.instance.enabled && SkyCoreConfig.instance.skillTracker.enabled
@@ -40,21 +39,21 @@ class SkillTrackerWidget : HudWidget("skill_tracker", "Skill Tracker", defaultX 
         var maxW = Fonts.width(TITLE)
         val labels = lines.map { Fonts.label(it, Fonts.SMALL) }
         for (label in labels) maxW = maxOf(maxW, Fonts.width(label))
-        cachedWidth = maxOf(MIN_W, PAD * 2 + maxW)
-        cachedHeight = PAD + TITLE_H + 6 + labels.size * ROW_H + PAD - 2
+        cachedWidth = maxOf(MIN_W, PAD_X * 2 + maxW)
+        cachedHeight = PAD_Y + TITLE_H + 5 + labels.size * ROW_H + PAD_Y - 1
 
-        Ui.shadow(g, 0, 1, width, height, 4)
-        Ui.panel(g, 0, 0, width, height, Theme.SURFACE, Theme.BORDER, 8)
-        g.fill(PAD, PAD + 11, width - PAD, PAD + 12, Ui.withAlpha(Theme.ACCENT, 0.35f))
+        HudStyle.panel(g, 0, 0, width, height)
+        HudStyle.accentBar(g, 0, PAD_Y, TITLE_H)
 
         val font = Minecraft.getInstance().font
-        g.text(font, TITLE, PAD, PAD, Theme.ACCENT, false)
+        g.text(font, TITLE, PAD_X + 2, PAD_Y, HudStyle.TITLE, false)
+        HudStyle.titleRule(g, PAD_X, PAD_Y + TITLE_H + 1, width - PAD_X * 2)
 
-        var y = PAD + TITLE_H + 6
+        var y = PAD_Y + TITLE_H + 5
         for (i in lines.indices) {
             val name = lines[i].substringBefore(" (")
-            val color = if (name in SkillTracker.SKILLS) Theme.ACCENT else Theme.TEXT
-            g.text(font, labels[i], PAD, y, color, false)
+            val color = if (name in SkillTracker.SKILLS) HudStyle.ACCENT else HudStyle.TEXT
+            g.text(font, labels[i], PAD_X, y, color, false)
             y += ROW_H
         }
     }

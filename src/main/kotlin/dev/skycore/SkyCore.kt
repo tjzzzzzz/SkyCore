@@ -2,10 +2,33 @@ package dev.skycore
 
 import dev.skycore.config.SkyCoreConfig
 import dev.skycore.core.command.SkyCoreCommands
+import dev.skycore.core.dungeon.DungeonUtil
 import dev.skycore.core.keybind.SkyCoreKeys
 import dev.skycore.core.location.LocationManager
 import dev.skycore.core.module.ServerPackControl
 import dev.skycore.core.module.ToggleSprint
+import dev.skycore.core.module.dungeon.ClassNametags
+import dev.skycore.core.module.dungeon.CroesusSolver
+import dev.skycore.core.module.dungeon.DeviceSolvers
+import dev.skycore.core.module.dungeon.DungeonChestValue
+import dev.skycore.core.module.dungeon.KeyHighlight
+import dev.skycore.core.module.dungeon.LeapOverlay
+import dev.skycore.core.module.dungeon.LividSolver
+import dev.skycore.core.module.dungeon.MelodyMessage
+import dev.skycore.core.module.dungeon.MimicMessage
+import dev.skycore.core.module.dungeon.MinibossHighlight
+import dev.skycore.core.module.dungeon.PlatformHighlight
+import dev.skycore.core.module.dungeon.PrinceMessage
+import dev.skycore.core.module.dungeon.QuickClose
+import dev.skycore.core.module.dungeon.RelicHighlight
+import dev.skycore.core.module.dungeon.ScoreCalculator
+import dev.skycore.core.module.dungeon.SecretBatHighlight
+import dev.skycore.core.module.dungeon.SecretChime
+import dev.skycore.core.module.dungeon.SpiritBowHighlight
+import dev.skycore.core.module.dungeon.StarredMobHighlight
+import dev.skycore.core.module.dungeon.TerminalSolvers
+import dev.skycore.core.module.dungeon.TerracottaTimer
+import dev.skycore.core.module.dungeon.WitherDragons
 import dev.skycore.core.module.general.ChatRules
 import dev.skycore.core.module.general.ChatTweaks
 import dev.skycore.core.module.general.ChatWaypoints
@@ -30,6 +53,7 @@ import dev.skycore.core.module.mining.GhostVision
 import dev.skycore.core.module.mining.ScathaMining
 import dev.skycore.core.module.mining.ShaftAnnounce
 import dev.skycore.core.render.WorldBoxes
+import dev.skycore.core.render.WorldLabels
 import dev.skycore.core.skyblock.PartyChat
 import dev.skycore.core.skyblock.TabListCache
 import dev.skycore.net.SkyCoreHttp
@@ -75,6 +99,8 @@ object SkyCore : ClientModInitializer {
         LocationManager.init()
         TabListCache.init()
         WorldBoxes.init()
+        WorldLabels.init()
+        DungeonUtil.init()
         SkyCoreKeys.init()
         SkyCoreCommands.init()
         HudManager.init()
@@ -106,6 +132,29 @@ object SkyCore : ClientModInitializer {
         ShaftAnnounce.init()
         CommissionHighlight.init()
         CommissionsDisplay.init()
+
+        TerminalSolvers.init()
+        DeviceSolvers.init()
+        LeapOverlay.init()
+        CroesusSolver.init()
+        DungeonChestValue.init()
+        QuickClose.init()
+        MelodyMessage.init()
+        SecretChime.init()
+        WitherDragons.init()
+        ScoreCalculator.init()
+        MimicMessage.init()
+        PrinceMessage.init()
+        TerracottaTimer.init()
+        KeyHighlight.init()
+        LividSolver.init()
+        SecretBatHighlight.init()
+        SpiritBowHighlight.init()
+        RelicHighlight.init()
+        ClassNametags.init()
+        PlatformHighlight.init()
+        MinibossHighlight.init()
+        StarredMobHighlight.init()
 
         logger.info("ready in ${started.elapsedNow().inWholeMilliseconds}ms")
     }
