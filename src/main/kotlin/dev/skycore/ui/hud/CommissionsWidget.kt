@@ -1,7 +1,6 @@
 package dev.skycore.ui.hud
 
 import dev.skycore.config.SkyCoreConfig
-import dev.skycore.core.location.LocationManager
 import dev.skycore.core.module.mining.CommissionsDisplay
 import dev.skycore.ui.render.Fonts
 import dev.skycore.ui.render.Ui
@@ -28,8 +27,7 @@ class CommissionsWidget : HudWidget("commissions", "Commissions", defaultX = 0.0
 
     override val enabled: Boolean
         get() = SkyCoreConfig.instance.enabled &&
-            SkyCoreConfig.instance.commissionsDisplay.enabled &&
-            LocationManager.current.isMiningIsland
+            SkyCoreConfig.instance.commissionsDisplay.enabled
 
     override val width: Int get() = cachedWidth
     override val height: Int get() = cachedHeight

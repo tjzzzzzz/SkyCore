@@ -1,7 +1,6 @@
 package dev.skycore.mixin.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.skycore.core.module.mining.AbilityAlert;
 import dev.skycore.core.module.mining.BreakResetFix;
 import dev.skycore.core.module.mining.EndNodeHighlight;
 import dev.skycore.core.module.mining.GhostVision;
@@ -47,7 +46,6 @@ public class ClientPacketListenerMixin {
 	private void skycore$inventory(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
 		var screen = Minecraft.getInstance().gui.screen();
 		if (screen == null) {
-			AbilityAlert.INSTANCE.onInventory(packet.getItem());
 			BreakResetFix.INSTANCE.onInventory(packet.getSlot(), packet.getItem());
 		} else {
 			dev.skycore.core.module.general.ItemProtection.INSTANCE.onSlotUpdate(packet.getItem(), false);

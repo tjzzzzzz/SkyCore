@@ -16,6 +16,14 @@ import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.item.ItemStack
 import java.util.concurrent.ConcurrentHashMap
 
+private enum class CorpseKind {
+    None,
+    Lapis,
+    Tungsten,
+    Umber,
+    Vanguard,
+}
+
 object CorpseHighlight {
 
     private val stands = ConcurrentHashMap.newKeySet<Int>()
@@ -49,15 +57,24 @@ object CorpseHighlight {
             for (id in stands) {
                 if (hideOpened && opened.contains(id)) continue
                 val stand = level.getEntity(id) as? ArmorStand ?: continue
-                val type = corpseType(stand)
-                if (type == CorpseType.None) continue
-                val box = stand.getDimensions(Pose.STANDING).makeBoundingBox(stand.position()).inflate(0.25, 0.0, 0.25)
-                when (type) {
-                    CorpseType.Lapis -> WorldBoxes.both(box, LAPIS_FILL, LAPIS_OUT)
-                    CorpseType.Tungsten -> WorldBoxes.both(box, TUNGSTEN_FILL, TUNGSTEN_OUT)
-                    CorpseType.Umber -> WorldBoxes.both(box, UMBER_FILL, UMBER_OUT)
-                    CorpseType.Vanguard -> WorldBoxes.both(box, VANGUARD_FILL, VANGUARD_OUT)
-                    CorpseType.None -> {}
+                when (corpseKind(stand)) {
+                    CorpseKind.Lapis -> {
+                        val box = stand.getDimensions(Pose.STANDING).makeBoundingBox(stand.position()).inflate(0.25, 0.0, 0.25)
+                        WorldBoxes.both(box, LAPIS_FILL, LAPIS_OUT)
+                    }
+                    CorpseKind.Tungsten -> {
+                        val box = stand.getDimensions(Pose.STANDING).makeBoundingBox(stand.position()).inflate(0.25, 0.0, 0.25)
+                        WorldBoxes.both(box, TUNGSTEN_FILL, TUNGSTEN_OUT)
+                    }
+                    CorpseKind.Umber -> {
+                        val box = stand.getDimensions(Pose.STANDING).makeBoundingBox(stand.position()).inflate(0.25, 0.0, 0.25)
+                        WorldBoxes.both(box, UMBER_FILL, UMBER_OUT)
+                    }
+                    CorpseKind.Vanguard -> {
+                        val box = stand.getDimensions(Pose.STANDING).makeBoundingBox(stand.position()).inflate(0.25, 0.0, 0.25)
+                        WorldBoxes.both(box, VANGUARD_FILL, VANGUARD_OUT)
+                    }
+                    CorpseKind.None -> {}
                 }
             }
         }
@@ -66,8 +83,8 @@ object CorpseHighlight {
     fun onInteract(entity: Entity) {
         if (!active() || !SkyCoreConfig.instance.corpseHighlight.hideOpened) return
         val stand = entity as? ArmorStand ?: return
-        val type = corpseType(stand)
-        if (type != CorpseType.None && hasKey(type)) {
+        val kind = corpseKind(stand)
+        if (kind != CorpseKind.None && hasKey(kind)) {
             opened.add(stand.id)
         }
     }
@@ -77,23 +94,23 @@ object CorpseHighlight {
             SkyCoreConfig.instance.corpseHighlight.enabled &&
             (LocationManager.current == IslandType.GLACITE_MINESHAFTS || TabListCache.isInArea("Mineshaft"))
 
-    private fun corpseType(stand: ArmorStand): CorpseType {
+    private fun corpseKind(stand: ArmorStand): CorpseKind {
         val helmet = stand.getItemBySlot(EquipmentSlot.HEAD)
-        if (helmet.isEmpty) return CorpseType.None
+        if (helmet.isEmpty) return CorpseKind.None
         return when (ItemData.plain(helmet.hoverName)) {
-            "Lapis Armor Helmet" -> CorpseType.Lapis
-            "Mineral Helmet" -> CorpseType.Tungsten
-            "Yog Helmet" -> CorpseType.Umber
-            "Vanguard Helmet" -> CorpseType.Vanguard
-            else -> CorpseType.None
+            "Lapis Armor Helmet" -> CorpseKind.Lapis
+            "Mineral Helmet" -> CorpseKind.Tungsten
+            "Yog Helmet" -> CorpseKind.Umber
+            "Vanguard Helmet" -> CorpseKind.Vanguard
+            else -> CorpseKind.None
         }
     }
 
-    private fun hasKey(type: CorpseType): Boolean {
-        val id = when (type) {
-            CorpseType.Tungsten -> "TUNGSTEN_KEY"
-            CorpseType.Umber -> "UMBER_KEY"
-            CorpseType.Vanguard -> "SKELETON_KEY"
+    private fun hasKey(kind: CorpseKind): Boolean {
+        val id = when (kind) {
+            CorpseKind.Tungsten -> "TUNGSTEN_KEY"
+            CorpseKind.Umber -> "UMBER_KEY"
+            CorpseKind.Vanguard -> "SKELETON_KEY"
             else -> return true
         }
         val inv = Minecraft.getInstance().player?.inventory ?: return false
@@ -103,6 +120,4 @@ object CorpseHighlight {
         }
         return false
     }
-
-    private enum class CorpseType { Lapis, Tungsten, Umber, Vanguard, None }
 }

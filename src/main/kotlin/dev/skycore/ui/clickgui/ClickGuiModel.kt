@@ -388,7 +388,7 @@ object ClickGuiRegistry {
             GuiCategory.GENERAL,
             ToggleOption(
                 "Skill Tracker",
-                "Tracks skill XP gain rates on the HUD.",
+                "Shows the skill you are currently gaining XP for. Hides after 5s idle.",
                 { SkyCoreConfig.instance.skillTracker.enabled },
                 { SkyCoreConfig.instance.skillTracker.enabled = it; SkyCoreConfig.save() }
             ).withKeywords("skill", "xp", "tracker", "exp", "hud", "sbe")
@@ -470,22 +470,15 @@ object ClickGuiRegistry {
         )
 
         val abilityAlert = SkyCoreConfig.instance.abilityAlert
-        val abilityOption = ToggleOption(
-            "Ability Alert",
-            "Alerts you when your Pickaxe Ability is available.",
-            { abilityAlert.enabled },
-            { abilityAlert.enabled = it; SkyCoreConfig.save() }
-        ).withKeywords("pickaxe", "ability", "mining", "cooldown", "drill", "gauntlet")
-        abilityOption.children = listOf(
-            SliderOption(
-                "Override Ticks",
-                "Force cooldown length in ticks. 0 uses the item lore.",
-                0f, 6000f, 20f,
-                { abilityAlert.overrideTicks.toFloat() },
-                { abilityAlert.overrideTicks = it.toInt(); SkyCoreConfig.save() }
-            ).withKeywords("cooldown", "ticks", "override", "duration")
+        register(
+            GuiCategory.MINING,
+            ToggleOption(
+                "Ability Alert",
+                "Title alert when chat says your pickaxe ability is available.",
+                { abilityAlert.enabled },
+                { abilityAlert.enabled = it; SkyCoreConfig.save() }
+            ).withKeywords("pickaxe", "ability", "mining", "cooldown", "drill", "gauntlet", "speed boost")
         )
-        register(GuiCategory.MINING, abilityOption)
 
         val corpse = SkyCoreConfig.instance.corpseHighlight
         val corpseOption = ToggleOption(

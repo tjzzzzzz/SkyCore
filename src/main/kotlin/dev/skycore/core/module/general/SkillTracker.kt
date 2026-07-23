@@ -1,8 +1,6 @@
 package dev.skycore.core.module.general
 
 import dev.skycore.config.SkyCoreConfig
-import dev.skycore.core.location.IslandType
-import dev.skycore.core.location.LocationManager
 import dev.skycore.core.skyblock.ItemData
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
@@ -24,7 +22,13 @@ object SkillTracker {
         "Catacombs"
     )
 
+    private const val HIDE_AFTER_TICKS = 100
+
     private val sessions = ConcurrentHashMap<String, SkillSession>()
+
+    @Volatile
+    private var focusedSkill: String? = null
+
     private var saveTicks = 0
 
     fun init() {
@@ -44,12 +48,11 @@ object SkillTracker {
 
         ClientTickEvents.END_CLIENT_TICK.register {
             if (!enabled()) return@register
-            for (skill in SKILLS) {
-                if (isActive(skill)) tickSession(skill)
-            }
+            val focused = focusedSkill
+            if (focused != null) tickSession(focused)
             saveTicks++
             if (saveTicks >= 1200) {
-                if (SKILLS.any { isActive(it) }) SkyCoreConfig.save()
+                if (focusedSkill != null) SkyCoreConfig.save()
                 saveTicks = 0
             }
         }
@@ -57,6 +60,7 @@ object SkillTracker {
 
     fun reset(skill: String) {
         sessions.getOrPut(skill) { SkillSession() }.reset()
+        if (focusedSkill == skill) focusedSkill = null
         SkyCoreConfig.instance.skillTracker.active[skill] = false
         SkyCoreConfig.save()
     }
@@ -67,6 +71,7 @@ object SkillTracker {
     fun setActive(skill: String, active: Boolean) {
         SkyCoreConfig.instance.skillTracker.active[skill] = active
         if (active) sessions.putIfAbsent(skill, SkillSession())
+        if (!active && focusedSkill == skill) focusedSkill = null
         SkyCoreConfig.save()
     }
 
@@ -74,19 +79,16 @@ object SkillTracker {
         sessions.getOrPut(skill) { SkillSession() }
 
     fun getDisplayLines(): List<String> {
-        val active = SKILLS.filter { isActive(it) }
-        if (active.isEmpty()) return listOf("None tracked.")
-        val lines = ArrayList<String>()
-        for (skill in active) {
-            val s = session(skill)
-            val paused = isPaused(skill)
-            lines += skill + if (paused) " (paused)" else ""
-            lines += "EXP/hr: ${formatSep(xpPerHour(s))}"
-            lines += "Gained: ${formatSep(s.currentExp)}"
-            lines += "Counted: ${ticksToTime(s.countedTicks)}"
-            lines += "Elapsed: ${ticksToTime(s.totalTicks)}"
-        }
-        return lines
+        val skill = focusedSkill ?: return emptyList()
+        val s = session(skill)
+        if (s.pauseTicks >= HIDE_AFTER_TICKS) return emptyList()
+        return listOf(
+            skill,
+            "EXP/hr: ${formatSep(xpPerHour(s))}",
+            "Gained: ${formatSep(s.currentExp)}",
+            "Counted: ${ticksToTime(s.countedTicks)}",
+            "Elapsed: ${ticksToTime(s.totalTicks)}"
+        )
     }
 
     private fun enabled(): Boolean =
@@ -96,7 +98,7 @@ object SkillTracker {
         val index = msg.indexOf('+')
         if (index < 0) return
         for (skill in SKILLS) {
-            if (!msg.contains(skill) || !isActive(skill)) continue
+            if (!msg.contains(skill)) continue
             val close = msg.indexOf(')', index)
             if (close < 0) continue
             val expPart = msg.substring(index, close + 1)
@@ -123,30 +125,33 @@ object SkillTracker {
 
     private fun onChat(msg: String) {
         val trimmed = msg.trim()
-        if (trimmed.startsWith("+") && trimmed.endsWith(" Catacombs Experience") && isActive("Catacombs")) {
+        if (trimmed.startsWith("+") && trimmed.endsWith(" Catacombs Experience")) {
             val space = trimmed.indexOf(' ')
             if (space > 1) addExp("Catacombs", parseExp(trimmed.substring(1, space)))
         }
     }
 
     private fun addExp(skill: String, exp: Double) {
+        if (exp == 0.0) return
         val obj = session(skill)
+        if (focusedSkill != null && focusedSkill != skill) {
+            obj.currentExp = 0.0
+            obj.countedTicks = 0
+            obj.totalTicks = 0
+        }
         obj.currentExp += exp
         obj.pauseTicks = 0
+        focusedSkill = skill
+        SkyCoreConfig.instance.skillTracker.active[skill] = true
     }
 
     private fun tickSession(skill: String) {
         val obj = session(skill)
-        if (!isPaused(skill)) {
+        if (obj.pauseTicks < HIDE_AFTER_TICKS) {
             obj.countedTicks++
             obj.pauseTicks++
+            obj.totalTicks++
         }
-        obj.totalTicks++
-    }
-
-    private fun isPaused(skill: String): Boolean {
-        if (skill == "Catacombs" && LocationManager.current == IslandType.DUNGEONS) return false
-        return session(skill).pauseTicks >= 600
     }
 
     private fun xpPerHour(s: SkillSession): Double {

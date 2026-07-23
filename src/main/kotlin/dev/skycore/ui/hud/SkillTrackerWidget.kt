@@ -30,11 +30,10 @@ class SkillTrackerWidget : HudWidget("skill_tracker", "Skill Tracker", defaultX 
 
     override fun render(g: GuiGraphicsExtractor, editing: Boolean) {
         val live = SkillTracker.getDisplayLines()
-        val none = live.size == 1 && live[0] == "None tracked."
         val lines = when {
-            editing && (live.isEmpty() || none) ->
+            editing && live.isEmpty() ->
                 listOf("Mining", "EXP/hr: 12,500.0", "Gained: 4,200.0", "Counted: 5m12s", "Elapsed: 6m1s")
-            live.isEmpty() || none -> return
+            live.isEmpty() -> return
             else -> live
         }
 

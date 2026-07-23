@@ -15,7 +15,6 @@ class InfoBarWidget : HudWidget("info_bar", "Info Bar", defaultX = 0.01f, defaul
         const val HEIGHT = 16
         const val PAD = 8
         const val GAP = 10
-        const val DOT = 4
     }
 
     private var cachedWidth = 80
@@ -31,7 +30,13 @@ class InfoBarWidget : HudWidget("info_bar", "Info Bar", defaultX = 0.01f, defaul
         val parts = ArrayList<Pair<Component, Int>>(4)
 
         if (opts.fps) {
-            parts += Fonts.label("${ServerStats.fps()} FPS", Fonts.SMALL) to Theme.TEXT
+            val fps = ServerStats.fps()
+            val color = when {
+                fps >= 60 -> Theme.SUCCESS
+                fps >= 30 -> Theme.WARNING
+                else -> Theme.DANGER
+            }
+            parts += Fonts.label("$fps FPS", Fonts.SMALL) to color
         }
         if (opts.ping) {
             val ping = ServerStats.ping()
@@ -63,14 +68,12 @@ class InfoBarWidget : HudWidget("info_bar", "Info Bar", defaultX = 0.01f, defaul
         var content = 0
         for ((label, _) in parts) content += Fonts.width(label)
         content += GAP * (parts.size - 1).coerceAtLeast(0)
-        cachedWidth = PAD + DOT + 5 + content + PAD
+        cachedWidth = PAD + content + PAD
 
         Ui.panel(g, 0, 0, width, HEIGHT, Theme.SURFACE, Theme.BORDER, 7)
-        Ui.roundedRect(g, PAD, (HEIGHT - DOT) / 2, DOT, DOT, Theme.ACCENT, 2)
-        Ui.roundedRect(g, PAD - 1, (HEIGHT - DOT) / 2 - 1, DOT + 2, DOT + 2, Ui.withAlpha(Theme.ACCENT, 0.25f), 3)
 
         val font = Minecraft.getInstance().font
-        var x = PAD + DOT + 5
+        var x = PAD
         for ((label, color) in parts) {
             g.text(font, label, x, 5, color, false)
             x += Fonts.width(label) + GAP

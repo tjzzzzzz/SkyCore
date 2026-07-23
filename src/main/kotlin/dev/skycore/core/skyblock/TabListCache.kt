@@ -3,6 +3,8 @@ package dev.skycore.core.skyblock
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.PlayerInfo
+import java.util.Comparator
 
 object TabListCache {
 
@@ -15,6 +17,7 @@ object TabListCache {
 
     @Volatile
     private var dirty = true
+    private var tick = 0
 
     fun init() {
         ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
@@ -23,7 +26,8 @@ object TabListCache {
             dirty = true
         }
         ClientTickEvents.END_CLIENT_TICK.register {
-            if (dirty) {
+            tick++
+            if (dirty || tick % 20 == 0) {
                 refresh()
                 dirty = false
             }
@@ -44,32 +48,43 @@ object TabListCache {
 
     fun commissions(): List<String> {
         val all = lines()
-        val start = all.indexOfFirst { it.equals("Commissions", ignoreCase = true) || it == "Commissions:" }
-        if (start < 0) return emptyList()
-        val result = ArrayList<String>()
-        for (i in start + 1 until all.size) {
-            val line = all[i]
-            if (line.isEmpty()) continue
-            if (!line.startsWith(" ") && line.contains(":") && !COMMISSION_LINE.matches(line)) break
-            val trimmed = line.trim()
-            if (COMMISSION_LINE.matches(trimmed)) result.add(trimmed)
+        if (all.none { it.trimStart().startsWith("Commissions", ignoreCase = true) }) {
+            return emptyList()
         }
-        return result
+
+        val ordered = ArrayList<String>()
+        val seen = HashSet<String>()
+        for (raw in all) {
+            val trimmed = raw.trim()
+            if (trimmed.isEmpty()) continue
+            if (trimmed.startsWith("Commissions", ignoreCase = true)) continue
+            if (!COMMISSION_LINE.matches(trimmed)) continue
+            if (isFalsePositive(trimmed)) continue
+            if (seen.add(trimmed)) ordered.add(trimmed)
+        }
+        return ordered
     }
 
     fun isInArea(name: String): Boolean =
         area.equals(name, ignoreCase = true) || area.contains(name, ignoreCase = true)
 
     private fun refresh() {
-        val connection = Minecraft.getInstance().connection ?: return
-        val next = ArrayList<String>()
+        val client = Minecraft.getInstance()
+        val connection = client.connection ?: return
+        val tab = client.gui.hud.tabList
+
+        val source = connection.listedOnlinePlayers.ifEmpty { connection.onlinePlayers }
+        val entries: List<PlayerInfo> = source.sortedWith(TAB_ORDER)
+
+        val next = ArrayList<String>(entries.size)
         var foundArea = area
-        for (entry in connection.onlinePlayers) {
+        for (entry in entries) {
             val display = entry.tabListDisplayName ?: continue
-            val name = ItemData.plain(display).trim()
-            if (name.isEmpty()) continue
-            if (name.startsWith("Area: ") || name.startsWith("Dungeon: ")) {
-                foundArea = name.substringAfter(":").trim()
+            val name = ItemData.plain(display)
+            if (name.isBlank()) continue
+            val trimmed = name.trim()
+            if (trimmed.startsWith("Area: ") || trimmed.startsWith("Dungeon: ")) {
+                foundArea = trimmed.substringAfter(":").trim()
             }
             next.add(name)
         }
@@ -77,5 +92,26 @@ object TabListCache {
         lines = next
     }
 
-    private val COMMISSION_LINE = Regex(".+:\\s*(?:DONE|\\d+(?:\\.\\d+)?%?)")
+    private fun isFalsePositive(line: String): Boolean {
+        val name = line.substringBefore(":").trim()
+        if (FALSE_POSITIVE_NAMES.any { it.equals(name, ignoreCase = true) }) return true
+        return SKILL_LEVEL_NAME.matches(name)
+    }
+
+    private val FALSE_POSITIVE_NAMES = setOf(
+        "Area", "Server", "Gems", "Fairy Souls", "Bank", "Interest",
+        "Farming", "Mining", "Combat", "Foraging", "Fishing", "Enchanting",
+        "Alchemy", "Carpentry", "Taming", "Social", "Runecrafting", "Hunting"
+    )
+
+    private val SKILL_LEVEL_NAME = Regex(
+        "^(Farming|Mining|Combat|Foraging|Fishing|Enchanting|Alchemy|Carpentry|Taming|Social|Runecrafting|Hunting|Catacombs)\\s+\\d+$",
+        RegexOption.IGNORE_CASE
+    )
+
+    private val COMMISSION_LINE = Regex(".+:\\s*(?:DONE|\\d+(?:\\.\\d+)?%)")
+
+    private val TAB_ORDER: Comparator<PlayerInfo> =
+        Comparator.comparingInt(PlayerInfo::getTabListOrder)
+            .thenComparing({ it.profile.name }, String.CASE_INSENSITIVE_ORDER)
 }
